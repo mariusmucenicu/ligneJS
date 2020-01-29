@@ -1,2 +1,0 @@
-# picoJS
-Created with CodeSandbox
