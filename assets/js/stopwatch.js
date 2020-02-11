@@ -1,5 +1,16 @@
 const stopWatchButtons = document.querySelectorAll('.stopwatch__controls > button');
 const minSizeQuery = window.matchMedia('(min-width: 992px)');
+const hoursBox = document.querySelector('.stopwatch__hours');
+const minutesBox = document.querySelector('.stopwatch__minutes');
+const secondsBox = document.querySelector('.stopwatch__seconds');
+const millisecondsBox = document.querySelector('.stopwatch__milliseconds');
+const buttonsContainer = document.querySelector('.stopwatch__controls');
+const startButton = document.querySelector('#stopwatch__controls__start');
+const resetButton = document.querySelector('#stopwatch__controls__reset');
+
+let previousTime;
+let activeTimer;
+let hours = minutes = seconds = milliseconds = 0;
 
 
 function resizeButtons(buttons, matches) {
@@ -24,5 +35,74 @@ window.onload = resolveBtnSize;
 
 
 function formatNumber(number) {
-  return 0 < number && number < 10 ? `0${number}` : number.toString();
+  return 0 <= number && number < 10 ? `0${number}` : number.toString();
 }
+
+
+function processElapsedSeconds() {
+  seconds += Math.floor(milliseconds / 1000);
+  if (seconds >= 60) {
+    processElapsedMinutes()
+    seconds = seconds % 60;
+  }
+}
+
+
+function processElapsedMinutes() {
+  minutes += Math.floor(seconds / 60);
+  if (minutes >= 60) {
+    hours += Math.floor(minutes / 60);
+    minutes = minutes % 60;
+  }
+}
+
+
+function sliceTime(elapsed) {
+  milliseconds += elapsed;
+  if (milliseconds > 1000) {
+    processElapsedSeconds()
+    milliseconds = milliseconds % 1000;
+  }
+}
+
+
+function paintStopwatch() {
+  hoursBox.textContent = formatNumber(hours);
+  minutesBox.textContent = formatNumber(minutes);
+  secondsBox.textContent = formatNumber(seconds);
+  millisecondsBox.textContent = formatNumber(milliseconds).slice(0, 1);
+}
+
+
+function startTimer() {
+  startButton.disabled = true;
+  resetButton.disabled = false;
+  let currentTime = Date.now();
+  let elapsed = currentTime - previousTime;
+  previousTime = currentTime;
+  sliceTime(elapsed);
+  paintStopwatch();
+}
+
+
+function resetTimer() {
+  clearInterval(activeTimer);
+  startButton.disabled = false;
+  resetButton.disabled = true;
+  hours = minutes = seconds = milliseconds = 0;
+  paintStopwatch()
+}
+
+
+function initiateStopwatch(e) {
+  if (e.target.id === 'stopwatch__controls__start') {
+    previousTime = Date.now();
+    activeTimer = setInterval(startTimer, 100);
+  } else if (e.target.id === 'stopwatch__controls__reset') {
+      resetTimer();
+  } else {
+      console.debug('Clicked on container');
+  }
+}
+
+buttonsContainer.addEventListener('click', initiateStopwatch);
