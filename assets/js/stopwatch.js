@@ -21,3 +21,8 @@ function resolveBtnSize(event) {
 
 minSizeQuery.onchange = resolveBtnSize;
 window.onload = resolveBtnSize;
+
+
+function formatNumber(number) {
+  return 0 < number && number < 10 ? `0${number}` : number.toString();
+}
