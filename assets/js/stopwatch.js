@@ -42,7 +42,7 @@ function formatNumber(number) {
 function processElapsedSeconds() {
   seconds += Math.floor(milliseconds / 1000);
   if (seconds >= 60) {
-    processElapsedMinutes()
+    processElapsedMinutes();
     seconds = seconds % 60;
   }
 }
@@ -60,7 +60,7 @@ function processElapsedMinutes() {
 function sliceTime(elapsed) {
   milliseconds += elapsed;
   if (milliseconds > 1000) {
-    processElapsedSeconds()
+    processElapsedSeconds();
     milliseconds = milliseconds % 1000;
   }
 }
@@ -75,8 +75,6 @@ function paintStopwatch() {
 
 
 function startTimer() {
-  startButton.disabled = true;
-  resetButton.disabled = false;
   let currentTime = Date.now();
   let elapsed = currentTime - previousTime;
   previousTime = currentTime;
@@ -87,17 +85,28 @@ function startTimer() {
 
 function resetTimer() {
   clearInterval(activeTimer);
-  startButton.disabled = false;
-  resetButton.disabled = true;
+  activeTimer = null;
   hours = minutes = seconds = milliseconds = 0;
-  paintStopwatch()
+  startButton.textContent = 'START';
+  paintStopwatch();
 }
 
 
-function initiateStopwatch(e) {
-  if (e.target.id === 'stopwatch__controls__start') {
+function toggleTimer() {
+  if (activeTimer) {
+    clearInterval(activeTimer);
+    activeTimer = null;
+    startButton.textContent = 'START';
+  } else {
     previousTime = Date.now();
     activeTimer = setInterval(startTimer, 100);
+    startButton.textContent = 'STOP';
+  }
+}
+
+function initiateStopwatch(e) {
+  if (e.target.id === 'stopwatch__controls__start') {
+    toggleTimer();
   } else if (e.target.id === 'stopwatch__controls__reset') {
       resetTimer();
   } else {
