@@ -6,7 +6,6 @@ const secondsBox = document.querySelector('.stopwatch__seconds');
 const millisecondsBox = document.querySelector('.stopwatch__milliseconds');
 const buttonsContainer = document.querySelector('.stopwatch__controls');
 const startButton = document.querySelector('#stopwatch__controls__start');
-const resetButton = document.querySelector('#stopwatch__controls__reset');
 
 let previousTime;
 let activeTimer;
