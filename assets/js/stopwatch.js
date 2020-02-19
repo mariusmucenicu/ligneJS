@@ -9,10 +9,12 @@ const secondsBox = document.querySelector('.stopwatch__seconds');
 const millisecondsBox = document.querySelector('.stopwatch__milliseconds');
 const buttonsContainer = document.querySelector('.stopwatch__controls');
 const startButton = document.querySelector('#stopwatch__controls__start');
+const resetButton = document.querySelector('#stopwatch__controls__reset');
 
 let previousTime;
 let activeTimer;
 let hours = minutes = seconds = milliseconds = 0;
+let pastHours = pastMinutes = pastSeconds = pastMilliseconds = 0;
 
 function resizeButtons() {
   let screenSize = window.innerWidth;
@@ -88,12 +90,50 @@ function startTimer() {
 }
 
 
-function resetTimer() {
-  clearInterval(activeTimer);
-  activeTimer = null;
-  hours = minutes = seconds = milliseconds = 0;
-  startButton.textContent = 'START';
-  paintStopwatch();
+function processLapMilliseconds() {
+  if (pastMilliseconds > milliseconds) {
+    // = (milliseconds + 1000) - pastMilliseconds;
+    pastSeconds = seconds-= 1;
+  } else {
+    
+  }
+}
+
+
+function calculateLap() {
+  let lapSeconds = 0;
+  if (pastMilliseconds > milliseconds) {
+    lapMilliseconds = (milliseconds + 1000) - pastMilliseconds;
+    lapSeconds = seconds - 1 - pastSeconds;
+  } else {
+    lapSeconds = milliseconds - pastMilliseconds;
+  }
+}
+
+function processpastMilliseconds() {
+  processpastSeconds();
+  
+}
+
+
+function resetOrLap() {
+  if (activeTimer) {
+    console.log(
+      `current seconds: ${seconds}, current milliseconds: ${milliseconds}`,
+      `\npastSeconds: ${pastSeconds}, pastMilliseconds: ${pastMilliseconds}`
+    );
+    // calculateLap()
+    pastHours = hours;
+    pastMinutes = minutes;
+    pastSeconds = seconds;
+    pastMilliseconds = milliseconds;
+  } else {
+      clearInterval(activeTimer);
+      activeTimer = null;
+      hours = minutes = seconds = milliseconds = 0;
+      startButton.textContent = 'START';
+      paintStopwatch();
+  }
 }
 
 
@@ -102,18 +142,21 @@ function toggleTimer() {
     clearInterval(activeTimer);
     activeTimer = null;
     startButton.textContent = 'START';
+    resetButton.textContent = 'RESET';
   } else {
     previousTime = Date.now();
     activeTimer = setInterval(startTimer, 100);
     startButton.textContent = 'STOP';
+    resetButton.textContent = 'LAP';
   }
 }
+
 
 function initiateStopwatch(e) {
   if (e.target.id === 'stopwatch__controls__start') {
     toggleTimer();
   } else if (e.target.id === 'stopwatch__controls__reset') {
-      resetTimer();
+      resetOrLap();
   } else {
       console.debug('Clicked on container');
   }
