@@ -81,6 +81,10 @@ function paintStopwatch() {
 }
 
 
+function paintLap({lapHours, lapMinutes, lapSeconds, lapMilliseconds}) {
+
+}
+
 function startTimer() {
   let currentTime = Date.now();
   let elapsed = currentTime - previousTime;
@@ -90,39 +94,38 @@ function startTimer() {
 }
 
 
-function processLapMilliseconds() {
-  if (pastMilliseconds > milliseconds) {
-    // = (milliseconds + 1000) - pastMilliseconds;
-    pastSeconds = seconds-= 1;
-  } else {
-    
-  }
-}
-
-
 function calculateLap() {
-  let lapSeconds = 0;
-  if (pastMilliseconds > milliseconds) {
-    lapMilliseconds = (milliseconds + 1000) - pastMilliseconds;
-    lapSeconds = seconds - 1 - pastSeconds;
-  } else {
-    lapSeconds = milliseconds - pastMilliseconds;
-  }
-}
+  let timeComponents = {'lapHours': 0, 'lapMinutes': 0, 'lapSeconds': 0, 'lapMilliseconds': 0};
+  timeComponents['lapHours'] = hours - pastHours;
 
-function processpastMilliseconds() {
-  processpastSeconds();
-  
+  if (pastMinutes > minutes) {
+    timeComponents['lapHours'] -= 1;
+    timeComponents['lapMinutes'] = 60 - (pastMinutes - minutes);
+  } else {
+    timeComponents['lapMinutes'] = minutes - pastMinutes;
+  }
+
+  if (pastSeconds > seconds) {
+    timeComponents['lapMinutes'] -= 1;
+    timeComponents['lapSeconds'] = 60 - (pastSeconds - seconds);
+  } else {
+    timeComponents['lapSeconds'] = seconds - pastSeconds;
+  }
+
+  if (pastMilliseconds > milliseconds) {
+    timeComponents['lapSeconds'] -= 1;
+    timeComponents['lapMilliseconds'] = 1000 - (pastMilliseconds - milliseconds);
+  } else {
+    timeComponents['lapMilliseconds'] = milliseconds - pastMilliseconds;
+  }
+  return timeComponents;
 }
 
 
 function resetOrLap() {
   if (activeTimer) {
-    console.log(
-      `current seconds: ${seconds}, current milliseconds: ${milliseconds}`,
-      `\npastSeconds: ${pastSeconds}, pastMilliseconds: ${pastMilliseconds}`
-    );
-    // calculateLap()
+    let timeComponents = calculateLap();
+    paintLap(timeComponents);
     pastHours = hours;
     pastMinutes = minutes;
     pastSeconds = seconds;
