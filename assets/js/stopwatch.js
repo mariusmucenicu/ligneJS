@@ -82,10 +82,11 @@ function paintStopwatch() {
 
 
 function paintLap({lapHours, lapMinutes, lapSeconds, lapMilliseconds}) {
-
+  console.log(lapHours, lapMinutes, lapSeconds, lapMilliseconds);
 }
 
-function startTimer() {
+
+function updateTimer() {
   let currentTime = Date.now();
   let elapsed = currentTime - previousTime;
   previousTime = currentTime;
@@ -131,10 +132,7 @@ function resetOrLap() {
     pastSeconds = seconds;
     pastMilliseconds = milliseconds;
   } else {
-      clearInterval(activeTimer);
-      activeTimer = null;
       hours = minutes = seconds = milliseconds = 0;
-      startButton.textContent = 'START';
       paintStopwatch();
   }
 }
@@ -148,8 +146,8 @@ function toggleTimer() {
     resetButton.textContent = 'RESET';
   } else {
     previousTime = Date.now();
-    activeTimer = setInterval(startTimer, 100);
-    startButton.textContent = 'STOP';
+    activeTimer = setInterval(updateTimer, 100);
+    startButton.textContent = 'PAUSE';
     resetButton.textContent = 'LAP';
   }
 }
