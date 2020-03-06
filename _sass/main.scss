@@ -7,12 +7,12 @@ body {
   min-width: 300px;
 }
 
-.milliseconds {
-  font-size: 2.5rem;
+.stopwatch__milliseconds {
+  font-size: 2rem;
 }
 
 .stopwatch__typography {
-  font-size: 3rem;
+  font-size: 2.5rem;
   font-family: 'Courier', 'Courier New', 'monospace';
 }
 
@@ -22,9 +22,21 @@ body {
 
 
 /* Media Queries */
+@media (min-width: 576px) {
+  .stopwatch__milliseconds {
+    font-size: 2.5rem;
+  }
+  .stopwatch__typography {
+    font-size: 3rem;
+  }
+}
 
 @media (min-width: 992px) {
-  .milliseconds {
+  .stopwatch__milliseconds {
+    font-size: 3rem;
+  }
+
+  .stopwatch__typography {
     font-size: 3.5rem;
   }
 

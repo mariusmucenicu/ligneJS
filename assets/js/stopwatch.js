@@ -1,5 +1,8 @@
+const mediaQueries = {
+  'smallSize': window.matchMedia('(min-width: 576px)'),
+  'largeSize': window.matchMedia('(min-width: 992px)'),
+};
 const stopWatchButtons = document.querySelectorAll('.stopwatch__controls > button');
-const minSizeQuery = window.matchMedia('(min-width: 992px)');
 const hoursBox = document.querySelector('.stopwatch__hours');
 const minutesBox = document.querySelector('.stopwatch__minutes');
 const secondsBox = document.querySelector('.stopwatch__seconds');
@@ -11,26 +14,29 @@ let previousTime;
 let activeTimer;
 let hours = minutes = seconds = milliseconds = 0;
 
+function resizeButtons() {
+  let screenSize = window.innerWidth;
 
-function resizeButtons(buttons, matches) {
-  if (matches) {
+  if (screenSize >= 576 && screenSize < 992) {
+    stopWatchButtons.forEach(buttonElement => {
+        ['btn-sm', 'btn-lg'].forEach(cssClass => buttonElement.classList.remove(cssClass));
+      }
+    );
+  } else if (screenSize >= 992) {
     stopWatchButtons.forEach(buttonElement => buttonElement.classList.add('btn-lg'));
+    stopWatchButtons.forEach(buttonElement => buttonElement.classList.remove('btn-sm'));
   } else {
+    stopWatchButtons.forEach(buttonElement => buttonElement.classList.add('btn-sm'));
     stopWatchButtons.forEach(buttonElement => buttonElement.classList.remove('btn-lg'));
   }
 }
 
 
-function resolveBtnSize(event) {
-  if (event.target === event.currentTarget) {
-    resizeButtons(stopWatchButtons, event.matches);
-  } else {
-    resizeButtons(stopWatchButtons, minSizeQuery.matches);
-  }
+for (let mediaQuery in mediaQueries) {
+  mediaQueries[mediaQuery].onchange = resizeButtons;
 }
 
-minSizeQuery.onchange = resolveBtnSize;
-window.onload = resolveBtnSize;
+window.onload = resizeButtons;
 
 
 function formatNumber(number) {
